@@ -247,6 +247,13 @@ static void process_rx_work_cb(struct k_work *work) {
                                 }
                                 key_pos_states[position / 8] |= 1 << (position % 8);
                             } else {
+                                if (!((key_pos_states[position / 8] >> (position % 8)) & 1)) {
+                                    // Duplicate release (peripheral retried after a lost
+                                    // ACK). Forwarding it would double-release the behavior,
+                                    // e.g. leave &mmv speed negative => cursor drifts forever.
+                                    LOG_WRN("duplicate release on %d dropped", position);
+                                    break; // leaves the switch: event is not forwarded
+                                }
                                 key_pos_states[position / 8] &= ~(1 << (position % 8));
                             }
                         }
