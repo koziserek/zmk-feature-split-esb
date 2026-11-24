@@ -28,6 +28,22 @@ config ZMK_SPLIT_ESB_CTLR_TX_PWR_PLUS_8
     bool "+8 dBm"
     default y
 
+choice ZMK_SPLIT_ESB_BITRATE
+    prompt "ESB on-air bitrate"
+    default ZMK_SPLIT_ESB_BITRATE_2MBPS
+    help
+      Must be identical on the central and all peripherals. 1 Mbps has
+      roughly 3 dB better receiver sensitivity than 2 Mbps (more range,
+      more robust link) at the cost of twice the time on air per packet.
+
+config ZMK_SPLIT_ESB_BITRATE_2MBPS
+    bool "2 Mbps"
+
+config ZMK_SPLIT_ESB_BITRATE_1MBPS
+    bool "1 Mbps"
+
+endchoice
+
 config ZMK_SPLIT_ESB_PROTO_TX_ACK
     bool "Await ACK signal per sending packet for TX/RX"
     default y
